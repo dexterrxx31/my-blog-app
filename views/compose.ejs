@@ -1,15 +1,15 @@
 <%-include("partials/header")-%>
     <h1>Compose</h1>
-    <form accept="/" method="POST" class="">
+    <form accept="/" method="POST" style="font-family: 'Caveat', cursive; font-size: 2.5rem;">
         <div>
             <label for="title" class="form-label">Title</label>
-            <input type="text" name="newBlogContent" autocomplete="off" placeholder="Enter you Blog title here" class="form-control">
+            <input type="text" name="postTitle" autocomplete="off" placeholder="Enter you Blog title here" class="form-control">
         </div>
         <div>
             <label for="post" class="form-label">Post</label>
-            <textarea class="form-control" name="post" rows="4" placeholder="Enter your Blog content here"></textarea>
+            <textarea class="form-control" name="postBody" rows="4" placeholder="Enter your Blog content here"></textarea>
         </div>
-        <button type="submit" name="button" class="btn btn-info" style="background-color:lightseagreen ; margin-top: 5px;">Compose</button>
+        <button type="submit" name="buttonPost" class="btn btn-info" style="background-color:#016d49 ; margin-top: 5px; font-size: 2.0rem;">Compose</button>
     </form>
 
     <%-include("partials/footer")-%>
