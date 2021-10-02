@@ -53,8 +53,8 @@ h1{
   font-size: 2.5rem ;
 }
 a:hover {
-  color: white;
-  background-color: royalblue;
+  color: rgb(204, 200, 200);
+  background-color: rgb(79, 103, 182);
 }
 html {
   position: relative;
