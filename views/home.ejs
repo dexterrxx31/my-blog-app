@@ -2,6 +2,7 @@
 <%- include("partials/nav") %>
 
 <section class="hero">
+  <p class="hero-badge">✦ A journal by Riyan Ahmad</p>
   <h1>Notes, essays &amp; <em>honest</em> writing.</h1>
   <p class="hero-sub">A daily journal on writing, code, and the places in between.</p>
 </section>
@@ -16,7 +17,8 @@
 
 <% if (posts.length) { %>
   <section class="card-grid">
-    <% posts.forEach(function (post) { %>
+    <%- include("partials/post-card", { post: posts[0], featured: true }) %>
+    <% posts.slice(1).forEach(function (post) { %>
       <%- include("partials/post-card", { post: post }) %>
     <% }); %>
   </section>

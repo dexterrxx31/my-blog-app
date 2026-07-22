@@ -1,6 +1,7 @@
 <%- include("partials/head", { title: post.title + " — Daily Journal", metaDescription: post.excerpt }) %>
 <%- include("partials/nav") %>
 
+<div class="progress-bar" aria-hidden="true"></div>
 <article class="article">
   <header class="article-header">
     <% if (post.tags && post.tags.length) { %>
