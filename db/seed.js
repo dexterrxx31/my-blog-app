@@ -1,41 +1,46 @@
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
-const db = require("./database");
+const { db, init } = require("./database");
 const posts = require("../models/posts");
 
-// ---- Admin user (upsert from env) ----
+async function main() {
+  await init();
 
-const username = process.env.ADMIN_USERNAME;
-const password = process.env.ADMIN_PASSWORD;
+  // ---- Admin user (upsert from env) ----
 
-if (!username || !password) {
-  console.error("Set ADMIN_USERNAME and ADMIN_PASSWORD in .env before seeding.");
-  process.exit(1);
-}
+  const username = process.env.ADMIN_USERNAME;
+  const password = process.env.ADMIN_PASSWORD;
 
-const hash = bcrypt.hashSync(password, 12);
-db.prepare(
-  `INSERT INTO users (username, password_hash) VALUES (?, ?)
-   ON CONFLICT(username) DO UPDATE SET password_hash = excluded.password_hash`
-).run(username, hash);
-console.log(`Admin user "${username}" ready.`);
+  if (!username || !password) {
+    console.error("Set ADMIN_USERNAME and ADMIN_PASSWORD in .env before seeding.");
+    process.exit(1);
+  }
 
-// ---- Sample posts (only if the table is empty) ----
+  const hash = bcrypt.hashSync(password, 12);
+  await db.execute({
+    sql: `INSERT INTO users (username, password_hash) VALUES (?, ?)
+          ON CONFLICT(username) DO UPDATE SET password_hash = excluded.password_hash`,
+    args: [username, hash],
+  });
+  console.log(`Admin user "${username}" ready.`);
 
-const postCount = db.prepare("SELECT COUNT(*) AS n FROM posts").get().n;
-if (postCount > 0) {
-  console.log(`Posts table already has ${postCount} post(s) — skipping sample content.`);
-  process.exit(0);
-}
+  // ---- Sample posts (only if the table is empty) ----
 
-const samples = [
-  {
-    title: "Why I Started Writing Every Day",
-    coverImageUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80",
-    tags: "Writing, Productivity",
-    daysAgo: 21,
-    content: `Writing every day sounded like one of those habits that works for other people. Then I tried it for a month, and it quietly rewired how I think.
+  const countRs = await db.execute("SELECT COUNT(*) AS n FROM posts");
+  const postCount = Number(countRs.rows[0].n);
+  if (postCount > 0) {
+    console.log(`Posts table already has ${postCount} post(s) — skipping sample content.`);
+    return;
+  }
+
+  const samples = [
+    {
+      title: "Why I Started Writing Every Day",
+      coverImageUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80",
+      tags: "Writing, Productivity",
+      daysAgo: 21,
+      content: `Writing every day sounded like one of those habits that works for other people. Then I tried it for a month, and it quietly rewired how I think.
 
 ## The rule is embarrassingly simple
 
@@ -52,13 +57,13 @@ Most days the page is garbage. That's fine — the garbage is load-bearing. Gett
 - **Ideas stopped evaporating.** The notebook remembers so my brain doesn't have to.
 
 If you've been meaning to start, don't build a system. Just put a page in front of yourself tomorrow morning and fill it.`,
-  },
-  {
-    title: "A Practical Guide to Dark Mode in CSS",
-    coverImageUrl: "https://images.unsplash.com/photo-1550439062-609e1531270e?w=1200&q=80",
-    tags: "CSS, Web Development",
-    daysAgo: 14,
-    content: `Dark mode is table stakes now, and doing it well takes about twenty lines of CSS — if you set it up with design tokens from the start.
+    },
+    {
+      title: "A Practical Guide to Dark Mode in CSS",
+      coverImageUrl: "https://images.unsplash.com/photo-1550439062-609e1531270e?w=1200&q=80",
+      tags: "CSS, Web Development",
+      daysAgo: 14,
+      content: `Dark mode is table stakes now, and doing it well takes about twenty lines of CSS — if you set it up with design tokens from the start.
 
 ## Tokens first
 
@@ -98,13 +103,13 @@ document.documentElement.dataset.theme = theme;
 - Set \`color-scheme: dark\` so scrollbars and form controls follow.
 - Test your images — pure-white logos vanish on light backgrounds.
 - Dim your shadows in dark mode; they read as smudges otherwise.`,
-  },
-  {
-    title: "Three Days in the Himalayas",
-    coverImageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
-    tags: "Travel",
-    daysAgo: 9,
-    content: `The bus dropped us at the trailhead at 5 a.m., two hours late and somehow still too early. It was -4°C and the tea stall was the only light on the mountain.
+    },
+    {
+      title: "Three Days in the Himalayas",
+      coverImageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+      tags: "Travel",
+      daysAgo: 9,
+      content: `The bus dropped us at the trailhead at 5 a.m., two hours late and somehow still too early. It was -4°C and the tea stall was the only light on the mountain.
 
 ## Day one: up
 
@@ -123,13 +128,13 @@ At the top, prayer flags and a silence so complete I could hear my own pulse. We
 Descending, my knees filed formal complaints, but my head was quieter than it had been in months. No signal for three days does something that no meditation app has managed.
 
 **If you go:** carry water purification tablets, start earlier than feels reasonable, and book the homestay in the village — the dal there deserves its own blog post.`,
-  },
-  {
-    title: "SQLite Is Probably Enough",
-    coverImageUrl: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=1200&q=80",
-    tags: "Databases, Web Development",
-    daysAgo: 5,
-    content: `Every side project conversation eventually reaches the same question: *"What database should I use?"* And the honest answer, far more often than we admit, is SQLite.
+    },
+    {
+      title: "SQLite Is Probably Enough",
+      coverImageUrl: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=1200&q=80",
+      tags: "Databases, Web Development",
+      daysAgo: 5,
+      content: `Every side project conversation eventually reaches the same question: *"What database should I use?"* And the honest answer, far more often than we admit, is SQLite.
 
 ## The case in numbers
 
@@ -152,13 +157,13 @@ With WAL mode enabled, the classic "writes lock the database" complaint mostly d
 Reach for Postgres when you have *concurrent writers at volume*, need remote connections from multiple servers, or want advanced types and extensions. Those are real thresholds — but check whether you've crossed them, not whether you might someday.
 
 Start with the boring, free thing. Migrate when the pain is real. Usually, it never is.`,
-  },
-  {
-    title: "The Art of the Second Draft",
-    coverImageUrl: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=1200&q=80",
-    tags: "Writing",
-    daysAgo: 2,
-    content: `First drafts get all the romance — the blank page, the muse, the coffee-fuelled midnight sprint. But everything readers actually enjoy was made in the second draft.
+    },
+    {
+      title: "The Art of the Second Draft",
+      coverImageUrl: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=1200&q=80",
+      tags: "Writing",
+      daysAgo: 2,
+      content: `First drafts get all the romance — the blank page, the muse, the coffee-fuelled midnight sprint. But everything readers actually enjoy was made in the second draft.
 
 ## What the second draft is for
 
@@ -177,18 +182,25 @@ Read it aloud. Anywhere you stumble, the reader will stumble too. Anywhere you g
 ## The uncomfortable truth
 
 The gap between writers who improve and writers who don't isn't talent. It's the willingness to reread yesterday's page and admit which parts only made sense at midnight.`,
-  },
-];
+    },
+  ];
 
-const backdate = db.prepare(
-  "UPDATE posts SET created_at = datetime('now', ?), updated_at = datetime('now', ?) WHERE slug = ?"
-);
+  for (const s of samples) {
+    const slug = await posts.createPost(s);
+    const offset = `-${s.daysAgo} days`;
+    await db.execute({
+      sql: "UPDATE posts SET created_at = datetime('now', ?), updated_at = datetime('now', ?) WHERE slug = ?",
+      args: [offset, offset, slug],
+    });
+    console.log(`Seeded: ${s.title} (/post/${slug})`);
+  }
 
-for (const s of samples) {
-  const slug = posts.createPost(s);
-  const offset = `-${s.daysAgo} days`;
-  backdate.run(offset, offset, slug);
-  console.log(`Seeded: ${s.title} (/post/${slug})`);
+  console.log("Done.");
 }
 
-console.log("Done.");
+main()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

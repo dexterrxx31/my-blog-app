@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: daily-journal
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: TURSO_DATABASE_URL
+        sync: false # paste from Turso dashboard
+      - key: TURSO_AUTH_TOKEN
+        sync: false # paste from Turso dashboard
