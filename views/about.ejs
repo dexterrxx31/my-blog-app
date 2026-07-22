@@ -1,4 +1,16 @@
-<%-include("partials/header")-%> 
-<h1>About</h1>
-<p class="content-of-post"><%=aboutContent%></p>
-<%-include("partials/footer")-%> 
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
+
+<section class="page-header">
+  <p class="eyebrow">About</p>
+  <h1>Hi, I'm Riyan.</h1>
+</section>
+
+<div class="prose static-page">
+  <p>Daily Journal is where I think out loud — about writing, building things for the web, and whatever the road throws at me in between.</p>
+  <p>I believe the best way to understand something is to write about it, and the best way to write about it is to press publish before you feel ready. Most of what you'll find here started as a messy note and got slightly less messy in public.</p>
+  <p>When I'm not writing, I'm probably debugging something I broke myself, planning a trip to the mountains, or refilling the same cup of tea for the fourth time.</p>
+  <p>Thanks for reading. If something here resonated, <a href="/contact">say hello</a>.</p>
+</div>
+
+<%- include("partials/footer") %>

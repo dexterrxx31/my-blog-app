@@ -1,8 +1,30 @@
-<%-include("partials/header")-%> 
-<h1>Hello</h1>
-<p class="content-of-post"><%=content%></p>
-<%posts.forEach(function(post){%>
-    <h1><%=post.title%></h1>
-    <p class="content-of-post"><%= post.content.substring(0,100) + "..."%><a href="/post/<%= post.title %> ">Read More</a> </p> 
-<%});%>
-<%-include("partials/footer")-%> 
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
+
+<section class="hero">
+  <h1>Notes, essays &amp; <em>honest</em> writing.</h1>
+  <p class="hero-sub">A daily journal on writing, code, and the places in between.</p>
+</section>
+
+<% if (allTags && allTags.length) { %>
+  <div class="tag-cloud">
+    <% allTags.forEach(function (tag) { %>
+      <a href="/tag/<%= tag.slug %>" class="tag-pill"><%= tag.name %> <span class="tag-count"><%= tag.post_count %></span></a>
+    <% }); %>
+  </div>
+<% } %>
+
+<% if (posts.length) { %>
+  <section class="card-grid">
+    <% posts.forEach(function (post) { %>
+      <%- include("partials/post-card", { post: post }) %>
+    <% }); %>
+  </section>
+<% } else { %>
+  <div class="empty-state">
+    <p>No posts yet — the first story is waiting to be written.</p>
+    <% if (isAuthed) { %><a href="/compose" class="btn btn-primary">Write the first post</a><% } %>
+  </div>
+<% } %>
+
+<%- include("partials/footer") %>

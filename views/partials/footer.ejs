@@ -1,9 +1,12 @@
-
-</div>
-<div class="footer-padding"></div>
-  <div class="footer">
-    <p class="content-of-post">Made with Love by Riyan Ahmad</p>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>Made with love by Riyan Ahmad · © <%= new Date().getFullYear() %> Daily Journal</p>
+    <% if (!isAuthed) { %>
+      <a href="/admin/login" class="footer-link">Admin</a>
+    <% } %>
   </div>
-</div>
+</footer>
+<script src="/js/theme.js"></script>
 </body>
 </html>

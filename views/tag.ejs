@@ -1,0 +1,20 @@
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
+
+<section class="page-header">
+  <p class="eyebrow">Tagged</p>
+  <h1>#<%= tag.name %></h1>
+  <p class="page-sub"><%= posts.length %> post<%= posts.length === 1 ? "" : "s" %></p>
+</section>
+
+<% if (posts.length) { %>
+  <section class="card-grid">
+    <% posts.forEach(function (post) { %>
+      <%- include("partials/post-card", { post: post }) %>
+    <% }); %>
+  </section>
+<% } else { %>
+  <div class="empty-state"><p>Nothing here yet.</p></div>
+<% } %>
+
+<%- include("partials/footer") %>

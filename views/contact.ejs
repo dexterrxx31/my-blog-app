@@ -1,4 +1,18 @@
-<%-include("partials/header")-%>
-<h1>Contact</h1> 
-<p class="content-of-post"><%=contactContent%></p>
-<%-include("partials/footer")-%> 
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
+
+<section class="page-header">
+  <p class="eyebrow">Contact</p>
+  <h1>Say hello.</h1>
+</section>
+
+<div class="prose static-page">
+  <p>Questions, ideas, corrections, or just want to talk about a post? I read everything.</p>
+  <ul>
+    <li><strong>Email</strong> — <a href="mailto:riyanahmad99@gmail.com">riyanahmad99@gmail.com</a></li>
+    <li><strong>GitHub</strong> — <a href="https://github.com/riyan" target="_blank" rel="noopener">github.com/riyan</a></li>
+  </ul>
+  <p>I usually reply within a day or two. If it's about a bug on this site, screenshots earn extra gratitude.</p>
+</div>
+
+<%- include("partials/footer") %>

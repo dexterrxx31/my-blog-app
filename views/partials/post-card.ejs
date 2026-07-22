@@ -1,0 +1,23 @@
+<article class="post-card">
+  <% if (post.cover_image_url) { %>
+    <div class="card-cover">
+      <img src="<%= post.cover_image_url %>" alt="" loading="lazy">
+    </div>
+  <% } %>
+  <div class="card-body">
+    <% if (post.tags && post.tags.length) { %>
+      <div class="tag-row">
+        <% post.tags.forEach(function (tag) { %>
+          <a href="/tag/<%= tag.slug %>" class="tag-pill"><%= tag.name %></a>
+        <% }); %>
+      </div>
+    <% } %>
+    <h2 class="card-title"><a href="/post/<%= post.slug %>" class="card-link"><%= post.title %></a></h2>
+    <p class="card-excerpt"><%= post.excerpt %></p>
+    <div class="card-meta">
+      <time datetime="<%= post.created_at %>"><%= new Date(post.created_at.replace(" ", "T") + "Z").toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></time>
+      <span aria-hidden="true">·</span>
+      <span><%= post.reading_time %> min read</span>
+    </div>
+  </div>
+</article>

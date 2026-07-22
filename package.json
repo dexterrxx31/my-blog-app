@@ -1,17 +1,31 @@
 {
-  "name": "ejs-challenge",
-  "version": "1.0.0",
+  "name": "daily-journal",
+  "version": "2.0.0",
   "main": "app.js",
+  "description": "A modern blog built with Express, EJS and SQLite",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "seed": "node db/seed.js"
   },
-  "author": "",
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Riyan Ahmad",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "ejs": "^2.7.4",
-    "express": "^4.17.1",
-    "lodash": "^4.17.21"
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.1",
+    "better-sqlite3-session-store": "^0.1.0",
+    "dotenv": "^17.4.2",
+    "ejs": "^3.1.10",
+    "express": "^4.22.2",
+    "express-session": "^1.19.0",
+    "marked": "^18.0.7",
+    "sanitize-html": "^2.17.6",
+    "slugify": "^1.6.9"
   },
-  "description": ""
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
 }

@@ -1,0 +1,28 @@
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
+
+<section class="page-header">
+  <p class="eyebrow">Search</p>
+  <% if (q) { %>
+    <h1>Results for “<%= q %>”</h1>
+    <p class="page-sub"><%= results.length %> post<%= results.length === 1 ? "" : "s" %> found</p>
+  <% } else { %>
+    <h1>Search</h1>
+    <p class="page-sub">Type something in the search box to find posts.</p>
+  <% } %>
+</section>
+
+<% if (results.length) { %>
+  <section class="card-grid">
+    <% results.forEach(function (post) { %>
+      <%- include("partials/post-card", { post: post }) %>
+    <% }); %>
+  </section>
+<% } else if (q) { %>
+  <div class="empty-state">
+    <p>No posts match “<%= q %>”. Try a different word?</p>
+    <a href="/" class="btn btn-ghost">Back to home</a>
+  </div>
+<% } %>
+
+<%- include("partials/footer") %>

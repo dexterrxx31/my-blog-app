@@ -1,0 +1,27 @@
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
+
+<section class="form-page narrow">
+  <h1 class="form-title">Log in</h1>
+  <p class="page-sub">Admin access for composing and editing posts.</p>
+
+  <% if (error) { %>
+    <div class="alert alert-error"><p><%= error %></p></div>
+  <% } %>
+
+  <form action="/admin/login" method="POST" class="post-form">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required value="<%= username %>">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Log in</button>
+    </div>
+  </form>
+</section>
+
+<%- include("partials/footer") %>

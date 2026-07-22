@@ -1,15 +1,50 @@
-<%-include("partials/header")-%>
-    <h1>Compose</h1>
-    <form accept="/" method="POST" style="font-family: 'Caveat', cursive; font-size: 2.5rem;">
-        <div>
-            <label for="title" class="form-label">Title</label>
-            <input type="text" name="postTitle" autocomplete="off" placeholder="Enter you Blog title here" class="form-control">
-        </div>
-        <div>
-            <label for="post" class="form-label">Post</label>
-            <textarea class="form-control" name="postBody" rows="4" placeholder="Enter your Blog content here"></textarea>
-        </div>
-        <button type="submit" name="buttonPost" class="btn btn-info" style="background-color:#016d49 ; margin-top: 5px; font-size: 2.0rem;">Compose</button>
-    </form>
+<%- include("partials/head") %>
+<%- include("partials/nav") %>
 
-    <%-include("partials/footer")-%>
+<section class="form-page">
+  <h1 class="form-title"><%= post && post.id ? "Edit post" : "Compose" %></h1>
+
+  <% if (errors && errors.length) { %>
+    <div class="alert alert-error">
+      <ul>
+        <% errors.forEach(function (e) { %><li><%= e %></li><% }); %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="<%= post && post.id ? "/admin/edit/" + post.id : "/compose" %>" method="POST" class="post-form">
+    <div class="field">
+      <label for="postTitle">Title</label>
+      <input type="text" id="postTitle" name="postTitle" autocomplete="off"
+             placeholder="Your post title" required
+             value="<%= post ? post.title : "" %>">
+    </div>
+
+    <div class="field">
+      <label for="coverImageUrl">Cover image URL <span class="optional">(optional)</span></label>
+      <input type="url" id="coverImageUrl" name="coverImageUrl" autocomplete="off"
+             placeholder="https://images.unsplash.com/…"
+             value="<%= post && post.cover_image_url ? post.cover_image_url : "" %>">
+    </div>
+
+    <div class="field">
+      <label for="tags">Tags <span class="optional">(comma-separated)</span></label>
+      <input type="text" id="tags" name="tags" autocomplete="off"
+             placeholder="Writing, Travel, JavaScript"
+             value="<%= post && post.tagsCsv ? post.tagsCsv : "" %>">
+    </div>
+
+    <div class="field">
+      <label for="postBody">Content <span class="optional">(Markdown supported)</span></label>
+      <textarea id="postBody" name="postBody" rows="16" required
+                placeholder="## Write in Markdown&#10;&#10;**Bold**, *italic*, [links](https://example.com), code blocks, images and more."><%= post ? post.content : "" %></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= post && post.id ? "Save changes" : "Publish" %></button>
+      <a href="<%= post && post.id ? "/post/" + post.slug : "/" %>" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+
+<%- include("partials/footer") %>
