@@ -1,0 +1,57 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Smoke-boot the server
+        run: |
+          SESSION_SECRET=ci-secret node app.js &
+          SERVER_PID=$!
+          for i in $(seq 1 15); do
+            curl -sf http://localhost:3000/ >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:3000/ >/dev/null
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/no-such-page | grep -q 404
+          kill "$SERVER_PID"
+
+  deploy:
+    name: Deploy to Render
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy hook
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
+            curl -fsS "$RENDER_DEPLOY_HOOK" > /dev/null
+            echo "Render deploy triggered."
+          else
+            echo "RENDER_DEPLOY_HOOK secret not set — relying on Render auto-deploy."
+          fi

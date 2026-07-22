@@ -2,6 +2,7 @@
 
 A modern, professional blog application with a glassmorphism UI, built with **Express + EJS + SQLite** — no frontend framework, no build step, deployable for **$0/month**.
 
+[![CI/CD](https://github.com/dexterrxx31/my-blog-app/actions/workflows/ci.yml/badge.svg)](https://github.com/dexterrxx31/my-blog-app/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 ![Express](https://img.shields.io/badge/express-4.x-blue)
 ![Database](https://img.shields.io/badge/database-SQLite%20%2F%20Turso-teal)
@@ -114,6 +115,24 @@ No database setup required locally — a SQLite file is created automatically at
 | `npm run dev` | Start with auto-reload (nodemon) |
 | `npm start` | Start for production |
 | `npm run seed` | Upsert the admin user; insert sample posts if the DB is empty. Safe to re-run — also how you change the admin password |
+| `npm test` | Run the unit test suite (Node's built-in test runner — no extra dependencies) |
+
+---
+
+## Testing & CI/CD
+
+Unit tests live in [`test/`](test/) and use Node's built-in `node:test` runner:
+
+- **`markdown.test.js`** — rendering, XSS sanitization (script/`javascript:` stripping), excerpts, reading time
+- **`slugs.test.js`** — slug generation and collision suffixing
+- **`posts.test.js`** — model CRUD, tag dedupe, search escaping, cascade cleanup (runs against a throwaway temp database)
+
+[GitHub Actions](.github/workflows/ci.yml) runs on every push and PR to `main`:
+
+1. **Test** — unit tests on Node 20 and 22, plus a server smoke-boot (home page 200, unknown route 404)
+2. **Deploy** — after tests pass on `main`, triggers a Render deploy
+
+> **Gated deploys (recommended):** by default Render auto-deploys every push, even if CI fails. To deploy only green builds: in Render → your service → *Settings*, turn **Auto-Deploy off** and create a **Deploy Hook**; add its URL as a repo secret named `RENDER_DEPLOY_HOOK` (GitHub → Settings → Secrets and variables → Actions). The workflow then triggers deploys itself after tests pass.
 
 ---
 
